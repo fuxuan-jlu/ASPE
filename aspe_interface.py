@@ -24,15 +24,16 @@ class ASPE_Interface:
     def initialize_population(self):
         """Initialize population using the multi-agent system to mutate the initial code"""
         initial_code = self.code_init.get_initial_code()  # Get initial code from code_init instance
+        program_info = {'code': initial_code}
+        program_info['score'] = Evaluate(program_info['code'])
+        self.population.append(program_info)
+        """
         for _ in range(self.size):
             # Initialize program_info with the base code
-            program_info = {'code': initial_code}
-            program_info['score'] = Evaluate(program_info['code'])
-            self.population.append(program_info)
             # Use the multi-agent system to generate a variant of the initial code
             new_individual = self.generate_new_individual(program_info)
             self.population.append(new_individual)
-
+        """
     def generate_new_individual(self, program_info):
         """Use the multi-agent system to generate a new individual"""
         try:
@@ -57,8 +58,9 @@ class ASPE_Interface:
             program_info.update(self.prompts.extract_code(response4))
             #print(program_info)
             # Evaluate the new code
-            program_info['score'] = Evaluate(program_info['code'])
 
+            program_info['score'] = Evaluate(program_info['code'])
+            print("yes!")
             return program_info
 
         except Exception as e:
@@ -94,8 +96,7 @@ class ASPE_Interface:
             # Generate new individuals
             while len(self.population) < maxsize:
                 # Select parent (tournament selection)
-                parent = random.choice(self.population[:len(self.population)//2])  # Select from top 50%
-                print("yes!")
+                parent = random.choice(self.population[:len(self.population)//2+1])  # Select from top 50%
                 # Generate offspring using the multi-agent system
                 offspring = self.generate_new_individual(deepcopy(parent))
                 #print("yes!")
