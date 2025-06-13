@@ -40,6 +40,7 @@ def worker(code_str, queue):
     except Exception as e:
         queue.put((None, e, 0))
     finally:
+
         sys.stdout = old_stdout  # 恢复 stdout（可选，因为子进程会退出）
 
 def Evaluate(code_str):
@@ -71,13 +72,13 @@ def Evaluate(code_str):
             break
         if time.time() - start_time > timeout:
             p.terminate()
-            p.join()
+            #p.join()
             sys.stdout = old_stdout
             return 1000
         time.sleep(0.1)  # 避免忙等待
 
     trucksubpath, error, run_time = queue.get()
-    p.join()  # 确保子进程退出
+    #p.join()  # 确保子进程退出
     p.terminate()
     sys.stdout = old_stdout
 
